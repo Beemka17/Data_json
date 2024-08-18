@@ -14,20 +14,20 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Fetch the latest JSON data
-      run: curl -o new_data.json https://tiara0404.github.io/api/api.json
+      run: curl -o new_data.json https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/295/key/17a46cefa35f981c950288804603342d
 
     - name: Compare JSON files
       id: json_diff
       run: |
         if ! cmp -s new_data.json data.json; then
           mv new_data.json data.json
-          echo "::set-output name=updated::true"
+          echo "updated=true" >> $GITHUB_ENV
         else
-          echo "::set-output name=updated::false"
+          echo "updated=false" >> $GITHUB_ENV
         fi
 
     - name: Update JSON if changed
-      if: steps.json_diff.outputs.updated == 'true'
+      if: env.updated == 'true'
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
